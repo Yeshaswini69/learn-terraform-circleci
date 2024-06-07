@@ -4,14 +4,14 @@
 provider "aws" {
   region = var.region
 
-  default_tags {
+  default_tags {                                #default tags will be applied to all the resources; key value pair
     tags = {
       hashicorp-learn = "circleci"
     }
   }
 }
 
-resource "random_uuid" "randomid" {}
+resource "random_uuid" "randomid" {}            #creation of new resource of type random_uuid name is randomid
 
 resource "aws_s3_bucket" "app" {
   tags = {
@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "app" {
   }
 
   bucket        = "${var.app}.${var.label}.${random_uuid.randomid.result}"
-  force_destroy = true
+  force_destroy = true                          #allow bucket to get deleted even if it has objects.
 }
 
 resource "aws_s3_bucket_ownership_controls" "app" {
@@ -62,7 +62,6 @@ resource "aws_s3_bucket_website_configuration" "app" {
 }
 
 resource "aws_s3_object" "app" {
-  acl          = "public-read"
   key          = "index.html"
   bucket       = aws_s3_bucket.app.id
   content      = file("./assets/index.html")
